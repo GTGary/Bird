@@ -18,21 +18,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <ImageView
-                android:id="@+id/text"
+                android:id="@+id/head_img"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="140dp"
+                android:layout_marginBottom="10dp"
                 android:gravity="center"
-                android:src="@drawable/ic_dashboard_black_24dp"/>
+                android:src="@drawable/banner"/>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/tap_recyclerlist"
                 android:layout_width="match_parent"
+                android:layout_marginBottom="10dp"
+                android:background="@color/white"
                 android:visibility="visible"
-                android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+                android:layout_height="wrap_content"/>
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/vertical_recyclerlist"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+                android:background="@color/white"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
     </android.support.v4.widget.SwipeRefreshLayout>

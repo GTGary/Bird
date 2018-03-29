@@ -64,8 +64,7 @@ public class HomeFragment extends Fragment {
         sLayoutManager.setAutoMeasureEnabled(true);
         listRecyclerView = view.findViewById(R.id.vertical_recyclerlist);
         adapter = new ListRecycleViewAdapter(getData());
-        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(android.R.color.white);
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
+        swipeRefreshLayout.setColorSchemeResources(R.color.basecolor);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -82,6 +81,10 @@ public class HomeFragment extends Fragment {
         listRecyclerView.setLayoutManager(sLayoutManager);
         listRecyclerView.setHasFixedSize(true);
         listRecyclerView.setNestedScrollingEnabled(false);
+        data.addAll(getData());
+        data.addAll(getData());
+        data.addAll(getData());
+        adapter.updateData(data);
         listRecyclerView.setAdapter(adapter);
         scrollView.scrollTo(0, 0);
         adapter.setOnItemClickListener(new ListRecycleViewAdapter.OnItemClickListener() {
@@ -96,23 +99,41 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(getContext(),"onClick事件       您长时间的点击了第："+position+"个Item",Toast.LENGTH_SHORT).show();
             }
         });
+        handler.sendEmptyMessageDelayed(1, 100);
         return view;
     }
 private ArrayList<String> data;
     private ArrayList<String> getData() {
         data = new ArrayList<>();
         String temp = " item";
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 5; i++) {
             data.add(i + temp);
         }
 
         return data;
     }
 
+    public void resetpage(boolean isreset){
+        if (isreset){
+            handler.sendEmptyMessageDelayed(1, 100);
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
+        handler.sendEmptyMessageDelayed(1, 100);
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        handler.sendEmptyMessageDelayed(1, 100);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         handler.sendEmptyMessageDelayed(1, 100);
     }
 

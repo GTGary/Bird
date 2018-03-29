@@ -39,8 +39,7 @@ public class FondFragment extends Fragment {
         recyclerView = view.findViewById(R.id.fond_recyclerview);
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         adapter = new ListRecycleViewAdapter(getData());
-        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(android.R.color.white);
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary, R.color.colorPrimaryDark);
+        swipeRefreshLayout.setColorSchemeResources(R.color.basecolor);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

@@ -33,6 +33,9 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     private BottomNavigationView bottomNavigationView;
 
     private ViewPager myViewPager;
+    private HomeFragment homeFragment;
+    private FondFragment fondFragment;
+    private UserFragment userFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +51,18 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
+                        item.setIcon(getResources().getDrawable(R.drawable.bottom_home_true));
                         myViewPager.setCurrentItem(0);
+                        homeFragment.resetpage(true);
                         return true;
                     case R.id.navigation_dashboard:
+                        item.setIcon(getResources().getDrawable(R.drawable.bottom_find_true));
+
                         myViewPager.setCurrentItem(1);
                         return true;
                     case R.id.navigation_notifications:
+                        item.setIcon(getResources().getDrawable(R.drawable.bottom_user_true));
+
                         myViewPager.setCurrentItem(2);
                         return true;
                 }
@@ -62,9 +71,9 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         });
         fragments = new ArrayList<Fragment>();
         //实例化Fragment
-        HomeFragment homeFragment = new HomeFragment();
-        FondFragment fondFragment = new FondFragment();
-        UserFragment userFragment = new UserFragment();
+        homeFragment = new HomeFragment();
+        fondFragment = new FondFragment();
+        userFragment = new UserFragment();
         fragments.add(homeFragment);
         fragments.add(fondFragment);
         fragments.add(userFragment);
