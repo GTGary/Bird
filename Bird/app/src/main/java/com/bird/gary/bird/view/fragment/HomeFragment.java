@@ -12,6 +12,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import com.bird.gary.bird.adapter.ListRecycleViewAdapter;
 import com.bird.gary.bird.R;
+import com.bird.gary.bird.adapter.TapRecycleViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,10 +37,11 @@ public class HomeFragment extends Fragment {
     private LinearLayout linearLayout;
     private RecyclerView tapRecyclerView;
     private RecyclerView listRecyclerView;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private LinearLayoutManager mLayoutManager;
     private RecyclerView.LayoutManager sLayoutManager;
     private NestedScrollView scrollView;
-    private ListRecycleViewAdapter adapter;
+    private ListRecycleViewAdapter listadapter;
+    private TapRecycleViewAdapter tapAdapter;
 
     @SuppressLint("ResourceAsColor")
     @Nullable
@@ -58,13 +61,15 @@ public class HomeFragment extends Fragment {
         sLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         sLayoutManager.setAutoMeasureEnabled(true);
         listRecyclerView = view.findViewById(R.id.vertical_recyclerlist);
-        adapter = new ListRecycleViewAdapter(getData(),getContext());
+        listadapter = new ListRecycleViewAdapter(getData(),getContext());
+        tapAdapter = new TapRecycleViewAdapter(getData(),getContext(),true);
         swipeRefreshLayout.setColorSchemeResources(R.color.basecolor);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadMoreData();
-                adapter.notifyDataSetChanged();
+                refreshMoreData();
+                listadapter.notifyDataSetChanged();
+                tapAdapter.updateList(getData(),true);
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -72,13 +77,13 @@ public class HomeFragment extends Fragment {
         tapRecyclerView.setLayoutManager(mLayoutManager);
         tapRecyclerView.setHasFixedSize(true);
         tapRecyclerView.setNestedScrollingEnabled(false);
-        tapRecyclerView.setAdapter(adapter);
+        tapRecyclerView.setAdapter(listadapter);
         listRecyclerView.setLayoutManager(sLayoutManager);
         listRecyclerView.setHasFixedSize(true);
         listRecyclerView.setNestedScrollingEnabled(false);
-        listRecyclerView.setAdapter(adapter);
+        listRecyclerView.setAdapter(tapAdapter);
         scrollView.scrollTo(0, 0);
-        adapter.setOnItemClickListener(new ListRecycleViewAdapter.OnItemClickListener() {
+        listadapter.setOnItemClickListener(new ListRecycleViewAdapter.OnItemClickListener() {
             @Override
             public void onClick(int position) {
                 Toast.makeText(getContext(),"onLongClick事件       您点击了第："+position+"个Item",Toast.LENGTH_SHORT).show();
@@ -90,7 +95,64 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(getContext(),"onClick事件       您长时间的点击了第："+position+"个Item",Toast.LENGTH_SHORT).show();
             }
         });
-        handler.sendEmptyMessageDelayed(1, 100);
+        tapAdapter.setOnItemClickListener(new TapRecycleViewAdapter.OnItemClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Toast.makeText(getContext(),"onLongClick事件       您点击了第："+position+"个Item",Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+                Toast.makeText(getContext(),"onClick事件       您长时间的点击了第："+position+"个Item",Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        listRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                Log.d("test", "StateChanged = " + newState);
+            }
+            private int i=1;
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                Log.d("test", "onScrolled");
+
+                int lastVisibleItemPosition = mLayoutManager.findLastVisibleItemPosition();
+                if (lastVisibleItemPosition + 1 == tapAdapter.getItemCount()) {
+                    Log.d("test", "loading executed");
+
+                    boolean isRefreshing = swipeRefreshLayout.isRefreshing();
+                    if (isRefreshing) {
+                        tapAdapter.notifyItemRemoved(tapAdapter.getItemCount());
+                        return;
+                    }
+                    if (false) {
+
+                        if (i++>10){
+//                            isLoading = true;
+                            tapAdapter.updateList(null,false);
+                        }
+
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                data.add("你好啊");
+                                tapAdapter.notifyDataSetChanged();
+                                Toast.makeText(getContext(), "刷新了一条数据", Toast.LENGTH_SHORT).show();
+                                tapAdapter.notifyItemRemoved(tapAdapter.getItemCount());
+
+                            }
+                        }, 1000);
+                    }else {
+
+                    }
+                }
+            }
+        });
+        handler.sendEmptyMessage(1);
         return view;
     }
 private ArrayList<String> data;
@@ -106,26 +168,26 @@ private ArrayList<String> data;
 
     public void resetpage(boolean isreset){
         if (isreset){
-            handler.sendEmptyMessageDelayed(1, 100);
+            handler.sendEmptyMessage(1);
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        handler.sendEmptyMessageDelayed(1, 100);
+        handler.sendEmptyMessage(1);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        handler.sendEmptyMessageDelayed(1, 100);
+        handler.sendEmptyMessage(1);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        handler.sendEmptyMessageDelayed(1, 100);
+        handler.sendEmptyMessage(1);
     }
 
     Handler handler = new Handler() {
@@ -136,7 +198,7 @@ private ArrayList<String> data;
         }
     };
 
-    private void loadMoreData() {
+    private void refreshMoreData() {
         List<String> moreList = new ArrayList<>();
         for (int i = 10; i < 13; i++) {
             moreList.add("加载更多的数据");

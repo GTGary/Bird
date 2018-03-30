@@ -2,12 +2,15 @@ package com.bird.gary.bird.adapter;
 
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bird.gary.bird.R;
@@ -26,7 +29,7 @@ public class TapRecycleViewAdapter extends Adapter<ViewHolder> {
     private List data;
     private boolean hasMore = true;   // 变量，是否有更多数据
     private boolean fadeTips = false; // 变量，是否隐藏了底部的提示
-
+    private Handler mHandler = new Handler(Looper.getMainLooper()); //获取主线程的Handler
 
     public TapRecycleViewAdapter(List data, Context context,boolean hasMore) {
         this.context = context;
@@ -35,9 +38,9 @@ public class TapRecycleViewAdapter extends Adapter<ViewHolder> {
     }
 
     public interface OnItemClickListener {
-        void onItemClick(View view, int position);
+        void onClick(View view, int position);
 
-        void onItemLongClick(View view, int position);
+        void onLongClick(View view, int position);
     }
 
     private OnItemClickListener onItemClickListener;
@@ -80,13 +83,13 @@ public class TapRecycleViewAdapter extends Adapter<ViewHolder> {
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         if (holder instanceof ItemViewHolder) {
-//            holder.tv.setText(data.get(position));
+            ((ItemViewHolder)holder).tv.setText(data.get(position).toString());
             if (onItemClickListener != null) {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         int position = holder.getLayoutPosition();
-                        onItemClickListener.onItemClick(holder.itemView, position);
+                        onItemClickListener.onClick(holder.itemView, position);
                     }
                 });
 
@@ -94,18 +97,31 @@ public class TapRecycleViewAdapter extends Adapter<ViewHolder> {
                     @Override
                     public boolean onLongClick(View v) {
                         int position = holder.getLayoutPosition();
-                        onItemClickListener.onItemLongClick(holder.itemView, position);
+                        onItemClickListener.onLongClick(holder.itemView, position);
                         return false;
                     }
                 });
             }
         }else {
             if (hasMore){
+                ((FootViewHolder) holder).footLayout.setVisibility(View.VISIBLE);
                 ((FootViewHolder)holder).progressBar.setVisibility(View.VISIBLE);
                 ((FootViewHolder)holder).textView.setText("努力加载中...");
             }else {
                 ((FootViewHolder)holder).progressBar.setVisibility(View.INVISIBLE);
                 ((FootViewHolder)holder).textView.setText("没有更多数据");
+                // 然后通过延时加载模拟网络请求的时间，在500ms后执行
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // 隐藏提示条
+                        ((FootViewHolder) holder).footLayout.setVisibility(View.GONE);
+                        // 将fadeTips设置true
+                        fadeTips = true;
+                        // hasMore设为true是为了让再次拉到底时，会先显示正在加载更多
+                        hasMore = true;
+                    }
+                }, 1500);
             }
         }
     }
@@ -125,12 +141,23 @@ public class TapRecycleViewAdapter extends Adapter<ViewHolder> {
 
         private ProgressBar progressBar;
         private TextView textView;
+        private RelativeLayout footLayout;
 
         public FootViewHolder(View view) {
             super(view);
-            progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-            textView = (TextView) view.findViewById(R.id.foot_text);
+            footLayout = view.findViewById(R.id.foot_layout);
+            progressBar =  view.findViewById(R.id.progressBar);
+            textView =  view.findViewById(R.id.foot_text);
         }
+    }
+    // 暴露接口，更新数据源，并修改hasMore的值，如果有增加数据，hasMore为true，否则为false
+    public void updateList(List<String> newDatas, boolean hasMore) {
+        // 在原有的数据之上增加新数据
+        if (newDatas != null) {
+            data.addAll(newDatas);
+        }
+        this.hasMore = hasMore;
+        notifyDataSetChanged();
     }
 }
 

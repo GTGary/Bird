@@ -68,7 +68,7 @@ public class FondFragment extends Fragment {
                 super.onScrollStateChanged(recyclerView, newState);
                 Log.d("test", "StateChanged = " + newState);
             }
-
+            int i=1;
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -84,7 +84,12 @@ public class FondFragment extends Fragment {
                         return;
                     }
                     if (!isLoading) {
-//                        isLoading = true;
+
+                        if (i++>10&&i<15){
+                            isLoading = true;
+                            adapter.updateList(null,false);
+                        }
+
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
