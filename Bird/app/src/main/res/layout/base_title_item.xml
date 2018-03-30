@@ -5,6 +5,7 @@
     android:background="@color/colorPrimaryDark"
     android:orientation="horizontal">
     <LinearLayout
+        android:id="@+id/title_back"
         android:layout_width="42dp"
         android:gravity="center"
         android:paddingLeft="5dp"

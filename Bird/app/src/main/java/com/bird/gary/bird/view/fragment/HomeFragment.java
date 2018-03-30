@@ -1,8 +1,7 @@
-package com.bird.gary.bird.fragment;
+package com.bird.gary.bird.view.fragment;
 
 
 import android.annotation.SuppressLint;
-import android.database.Observable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,19 +15,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bird.gary.bird.ListRecycleViewAdapter;
-import com.bird.gary.bird.ListRecyclerOnScrollListener;
-import com.bird.gary.bird.MainActivity;
+import com.bird.gary.bird.adapter.ListRecycleViewAdapter;
 import com.bird.gary.bird.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Gary on 2018/3/26.
@@ -63,7 +58,7 @@ public class HomeFragment extends Fragment {
         sLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         sLayoutManager.setAutoMeasureEnabled(true);
         listRecyclerView = view.findViewById(R.id.vertical_recyclerlist);
-        adapter = new ListRecycleViewAdapter(getData());
+        adapter = new ListRecycleViewAdapter(getData(),getContext());
         swipeRefreshLayout.setColorSchemeResources(R.color.basecolor);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -81,10 +76,6 @@ public class HomeFragment extends Fragment {
         listRecyclerView.setLayoutManager(sLayoutManager);
         listRecyclerView.setHasFixedSize(true);
         listRecyclerView.setNestedScrollingEnabled(false);
-        data.addAll(getData());
-        data.addAll(getData());
-        data.addAll(getData());
-        adapter.updateData(data);
         listRecyclerView.setAdapter(adapter);
         scrollView.scrollTo(0, 0);
         adapter.setOnItemClickListener(new ListRecycleViewAdapter.OnItemClickListener() {
@@ -106,7 +97,7 @@ private ArrayList<String> data;
     private ArrayList<String> getData() {
         data = new ArrayList<>();
         String temp = " item";
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 6; i++) {
             data.add(i + temp);
         }
 

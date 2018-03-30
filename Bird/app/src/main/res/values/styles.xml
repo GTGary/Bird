@@ -19,4 +19,11 @@
         <item name="android:drawablePadding">2.0dip</item>
         <item name="android:layout_weight">1.0</item>
     </style>
+    <style name="starttheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/start</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
 </resources>

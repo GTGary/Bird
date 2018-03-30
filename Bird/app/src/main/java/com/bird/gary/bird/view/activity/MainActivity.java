@@ -1,4 +1,4 @@
-package com.bird.gary.bird;
+package com.bird.gary.bird.view.activity;
 
 
 import android.annotation.SuppressLint;
@@ -12,13 +12,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.view.Window;
 
 
-import com.bird.gary.bird.fragment.FondFragment;
-import com.bird.gary.bird.fragment.HomeFragment;
-import com.bird.gary.bird.fragment.MyAdapter;
-import com.bird.gary.bird.fragment.UserFragment;
+import com.bird.gary.bird.R;
+import com.bird.gary.bird.adapter.HomePageAdapter;
+import com.bird.gary.bird.view.fragment.FondFragment;
+import com.bird.gary.bird.view.fragment.HomeFragment;
+import com.bird.gary.bird.view.fragment.UserFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         fragments.add(fondFragment);
         fragments.add(userFragment);
         mFragmentManager = getSupportFragmentManager();
-        MyAdapter myAdapter = new MyAdapter(mFragmentManager, fragments, this);
+        HomePageAdapter myAdapter = new HomePageAdapter(mFragmentManager, fragments, this);
         //设置适配器
         myViewPager.setAdapter(myAdapter);
 

@@ -1,16 +1,17 @@
-package com.bird.gary.bird;
+package com.bird.gary.bird.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bird.gary.bird.R;
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Gary on 2018/3/27.
@@ -19,7 +20,7 @@ import java.util.List;
 public class ListRecycleViewAdapter extends RecyclerView.Adapter<ListRecycleViewAdapter.ViewHolder> {
 
     private ArrayList<String> mData;
-
+    private Context context;
     private OnItemClickListener mOnItemClickListener;
     public interface OnItemClickListener{
         void onClick( int position);
@@ -28,8 +29,9 @@ public class ListRecycleViewAdapter extends RecyclerView.Adapter<ListRecycleView
     public void setOnItemClickListener(OnItemClickListener onItemClickListener ){
         this. mOnItemClickListener= onItemClickListener;
     }
-    public ListRecycleViewAdapter(ArrayList<String> data) {
+    public ListRecycleViewAdapter(ArrayList<String> data, Context context) {
         this.mData = data;
+        this.context = context;
     }
 
     public void updateData(ArrayList<String> data) {
@@ -49,7 +51,9 @@ public class ListRecycleViewAdapter extends RecyclerView.Adapter<ListRecycleView
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         // 绑定数据
-        holder.mTv.setText(mData.get(position));
+        holder.title.setText(mData.get(position));
+        holder.contents.setText("此处是简介");
+        Glide.with(context).load("http://www.qinqinxiaodai.com/Images/nav-banner1.png").fitCenter().placeholder(R.drawable.bottom_find_true).into(holder.imageView);
         if( mOnItemClickListener!= null){
             holder. itemView.setOnClickListener( new View.OnClickListener() {
 
@@ -77,11 +81,15 @@ public class ListRecycleViewAdapter extends RecyclerView.Adapter<ListRecycleView
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView mTv;
+        TextView title;
+        TextView contents;
+        ImageView imageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            mTv = (TextView) itemView.findViewById(R.id.item_tv);
+            title = (TextView) itemView.findViewById(R.id.item_tv);
+            contents = (TextView) itemView.findViewById(R.id.item_content);
+            imageView = (ImageView) itemView.findViewById(R.id.item_img);
         }
     }
 }

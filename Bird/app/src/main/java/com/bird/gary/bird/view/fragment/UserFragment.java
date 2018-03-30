@@ -1,4 +1,4 @@
-package com.bird.gary.bird.fragment;
+package com.bird.gary.bird.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
